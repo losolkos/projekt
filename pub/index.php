@@ -16,3 +16,15 @@ require('./../scr/config.php')
         Post::upload($_FILES['uploadedFile']['tmp_name']);
     }
 ?>
+
+<?php
+     if(isset($_POST['submit'])) {
+        Post::upload($_FILES['uploadedFile']['tmp_name']);
+     }
+
+?>
+Ostatni post:
+<pre>
+<?php
+var_dump(Post::getLast());
+?>

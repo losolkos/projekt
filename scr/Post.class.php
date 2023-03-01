@@ -1,5 +1,44 @@
 <?php
 class Post {
+    private int $id;
+    private string $filename;
+    private string $timestamp;
+     
+    function __construct(int $i, string $f, string $t)
+    {
+        $this->id = $i;
+        $this->filename = $f;
+        $this->timestamp =$t;
+    }
+
+    static function getPage(int $pageNumber = 1, int $postsPerPage = 10) : array {
+        global $db;
+        $query = $db->prepare("SELECT * FROM coś ORDER BY timestamp DESC LIMIT ? OFFSET ?");
+        $offset = ($pageNumber-1)*$postsPerPage;
+        $query->bind_param('ii', $postsPerPage, $offset);
+        $query->execute();
+        $result = $query->get_result();
+        $postsArray = array();
+        while($row = $result->fetch_assoc()) {
+            $post = new Post($row['id'],$row['filename'],$row['timestamp']);
+            array_push($postsArray, $post);
+        }
+        return $postsArray;
+    }
+
+
+    static function getLast(): Post {
+        global $db;
+        $query = $db->prepare("SELECT * FROM coś ORDER BY timestamp DESC LIMIT 1");
+        $query->execute();
+        $result = $query->get_result();
+        $row =$result->fetch_assoc();
+        $p = new Post($row['id'], $row['filename'], $row['timestamp']);
+        return $p;
+
+
+    }
+
     static function upload(string $tempFileName) {
         $targetDir = "img/";
         //sprawdź czy mamy do czynienia z obrazem
@@ -11,7 +50,7 @@ class Post {
         $hash = hash("sha256", $randomNumber);
         $newFileName = $targetDir . $hash. ".webp";
         //sprawdź czy plik przypadkiem już nie istnieje
-        if(file_exists($tempFileName)) {
+        if(file_exists($newFileName)) {
         die("BŁĄD: Podany plik już istnieje!");
         }
         //zaczytujemy cały obraz z folderu tymczasowego do stringa
@@ -20,17 +59,20 @@ class Post {
         //generujemy obraz jako obiekt klasy GDImage
         //@ przed nazwa funkcji powoduje zignorowanie ostrzeżeń
         $gdImage = @imagecreatefromstring($imageString);
+        imagewebp($gdImage, $newFileName);
 
         global $db;
+        
+        
+        $query = $db->prepare("INSERT INTO coś VALUES(NULL, ?, ?)");
 
-        $db = new mysqli('localhost', 'root', '', 'cms');
-        $query = $db->prepare("INSERT INTO post VALUES(NULL, ?, ?)");
         $dbTimestamp = date("Y-m-d H:i:s");
-        $query->bind_param("ss", $dbTimestamp, $hash);
+        $query->bind_param("ss", $dbTimestamp, $newFileName);
+
         if(!$query->execute())
+
             die("Błąd zapisu do bazy danych");
 
-        echo "Plik został poprawnie wgrany na serwer";
     }
         
 
