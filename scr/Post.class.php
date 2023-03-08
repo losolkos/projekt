@@ -11,6 +11,15 @@ class Post {
         $this->timestamp =$t;
     }
 
+    public function getFilename() : string{
+        return $this->filename;
+    }
+
+    public function getTimestamp() : string{
+        return $this->timestamp;
+    }
+
+
     static function getPage(int $pageNumber = 1, int $postsPerPage = 10) : array {
         global $db;
         $query = $db->prepare("SELECT * FROM coś ORDER BY timestamp DESC LIMIT ? OFFSET ?");

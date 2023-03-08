@@ -1,5 +1,5 @@
 {% include 'header.html.twig' %}
-<h1>Wgraj obrazek</h1>
+<h1>{{ pageTitle|default("Brak tytułu podstrony")}}</h1>
 <form action="" method="post" enctype="multipart/form-data">
     <label for="uploadedFileInput">
         Wybierz plik do wgrania na serwer:
