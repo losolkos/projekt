@@ -1,30 +1,12 @@
 <?php
-require('./../scr/config.php')
-?>
 
-<form action="" method="post" enctype="multipart/form-data">
-        <label for="uploadedFileInput">
-            Wybierz plik do wgrania na serwer:
-        </label><br>
-        <input type="file" name="uploadedFile" id="uploadedFileInput" required><br>
-        <input type="submit" value="Wyślij plik" name="submit"><br>
-</form>
+require_once('./../scr/config.php');
 
-<?php
-    //sprawdź czy został wysłany formularz
-    if(isset($_POST['submit']))  {
-        Post::upload($_FILES['uploadedFile']['tmp_name']);
-    }
-?>
+use Steampixel\Route;
 
-<?php
-     if(isset($_POST['submit'])) {
-        Post::upload($_FILES['uploadedFile']['tmp_name']);
-     }
+Route::add('/', function() {
+    echo "strona główna";
+});
+Route::run('/AGHP4/projekt/pub');
 
-?>
-Ostatni post:
-<pre>
-<?php
-var_dump(Post::getLast());
 ?>
