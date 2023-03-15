@@ -3,12 +3,14 @@ class Post {
     private int $id;
     private string $filename;
     private string $timestamp;
+    private string $tytul;
      
-    function __construct(int $i, string $f, string $t)
+    function __construct(int $i, string $f, string $t, string $l)
     {
         $this->id = $i;
         $this->filename = $f;
         $this->timestamp =$t;
+        $this->tytul =$l;
     }
 
     public function getFilename() : string{
@@ -17,6 +19,9 @@ class Post {
 
     public function getTimestamp() : string{
         return $this->timestamp;
+    }
+    public function getTytul() : string{
+        return $this->tytul;
     }
 
 
@@ -29,7 +34,7 @@ class Post {
         $result = $query->get_result();
         $postsArray = array();
         while($row = $result->fetch_assoc()) {
-            $post = new Post($row['id'],$row['filename'],$row['timestamp']);
+            $post = new Post($row['id'],$row['filename'],$row['timestamp'],$row['tytul']);
             array_push($postsArray, $post);
         }
         return $postsArray;
@@ -42,7 +47,7 @@ class Post {
         $query->execute();
         $result = $query->get_result();
         $row =$result->fetch_assoc();
-        $p = new Post($row['id'], $row['filename'], $row['timestamp']);
+        $p = new Post($row['id'], $row['filename'], $row['timestamp'],$row['tytul']);
         return $p;
 
 
@@ -58,6 +63,7 @@ class Post {
         $randomNumber = rand(10000, 99999) . hrtime(true);
         $hash = hash("sha256", $randomNumber);
         $newFileName = $targetDir . $hash. ".webp";
+        $newTytul = "1";
         if(file_exists($newFileName)) {
         die("BŁĄD: Podany plik już istnieje!");
         }
@@ -70,10 +76,10 @@ class Post {
         global $db;
         
         
-        $query = $db->prepare("INSERT INTO coś VALUES(NULL, ?, ?)");
+        $query = $db->prepare("INSERT INTO coś VALUES(NULL, ?, ?, ?)");
 
         $dbTimestamp = date("Y-m-d H:i:s");
-        $query->bind_param("ss", $dbTimestamp, $newFileName);
+        $query->bind_param("sss", $dbTimestamp, $newFileName,$newTytul);
 
         if(!$query->execute())
 
