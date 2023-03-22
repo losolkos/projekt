@@ -1,7 +1,9 @@
 {% include 'header.html.twig' %}
 <div id="pageContainer">
     <h1>{{pageTitle}}</h1>
-
+    {% if user is defined %}
+    <div id="loggedUser">Zalogowany użytkownik: {{ user.getName() }} </div>
+    {% endif %}
     {% for post in postArray %}
     <div id="post">
         <img src="{{ post.getFilename() }}">

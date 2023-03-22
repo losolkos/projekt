@@ -1,14 +1,28 @@
 <?php
 class User {
+    private $id;
     private $emeil;
 
-    public function _construct($emeil ){
+    public function _construct($emeil, $id ){
         $this->emeil = $emeil;
 
+    }
+    public function getID() : string{
+        return $this->id;
     }
 
     public function getName() : string{
         return $this->emeil;
+    }
+    public static function getNameById(int $id){
+        global $db;
+        $query = $db->prepare("SELECT emeil FROM user WHERE id = ? LIMIT 1");
+        $query->bind_param('i', $userid);
+        $query->execute();
+        $result = $query->get_result();
+        $row = $result->fetch_assoc();
+        return $row['emeil'];
+
     }
 
     public static function register(string $emeil, string $password): bool {
@@ -28,7 +42,7 @@ class User {
         $row = $result->fetch_assoc();
         $passwordHash = $row['password'];
         if(password_verify($password, $passwordHash)){
-            $u = new User($emeil);
+            $u = new User($row['id'],$emeil);
             $_SESSION['user'] = $u;
 
         }

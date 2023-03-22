@@ -4,13 +4,18 @@ class Post {
     private string $filename;
     private string $timestamp;
     private string $tytul;
+    private int $autorName;
+    private int $autor;
      
-    function __construct(int $i, string $f, string $t, string $l)
+    function __construct(int $i, string $f, string $t, string $l, int $a)
     {
         $this->id = $i;
         $this->filename = $f;
         $this->timestamp =$t;
         $this->tytul =$l;
+        $this->autor =$a;
+        $this->autorName = User::getNameById($this->autor);
+        global $db;
     }
 
     public function getFilename() : string{
@@ -23,6 +28,9 @@ class Post {
     public function getTytul() : string{
         return $this->tytul;
     }
+    public function getAutorName() : string {
+        return $this->autorName;
+    }
 
 
     static function getPage(int $pageNumber = 1, int $postsPerPage = 10) : array {
@@ -34,7 +42,7 @@ class Post {
         $result = $query->get_result();
         $postsArray = array();
         while($row = $result->fetch_assoc()) {
-            $post = new Post($row['id'],$row['filename'],$row['timestamp'],$row['tytul']);
+            $post = new Post($row['id'],$row['filename'],$row['timestamp'],$row['tytul'], $row['userid']);
             array_push($postsArray, $post);
         }
         return $postsArray;
@@ -47,13 +55,13 @@ class Post {
         $query->execute();
         $result = $query->get_result();
         $row =$result->fetch_assoc();
-        $p = new Post($row['id'], $row['filename'], $row['timestamp'],$row['tytul']);
+        $p = new Post($row['id'], $row['filename'], $row['timestamp'],$row['tytul'],$row['userid']);
         return $p;
 
 
     }
 
-    static function upload(string $tempFileName) {
+    static function upload(string $tempFileName, string $l, int $a) {
         $targetDir = "img/";
 
         $imgInfo = getimagesize($tempFileName);
@@ -76,10 +84,10 @@ class Post {
         global $db;
         
         
-        $query = $db->prepare("INSERT INTO coś VALUES(NULL, ?, ?, ?)");
+        $query = $db->prepare("INSERT INTO coś VALUES(NULL, ?, ?, ?,?)");
 
         $dbTimestamp = date("Y-m-d H:i:s");
-        $query->bind_param("sss", $dbTimestamp, $newFileName,$newTytul);
+        $query->bind_param("sssi", $dbTimestamp, $newFileName,$newTytul, $autor);
 
         if(!$query->execute())
 
