@@ -26,6 +26,20 @@ Route::add('/upload', function(){
     }
     header("Location: http://localhost/AGHP4/projekt/pub");
 }, 'post');
+
+Route::add('/register', function(){
+    global $twig;
+    $twigData = array("pageTitle" => "Zarejestruj użytkownika");
+    $twig->display("register.html.twig", $twigData);
+    });
+    
+    Route::add('/register', function(){
+        global $twig;
+        if(isset($_POST['submit'])){
+            User::register($_POST['emeil'], $_POST['password']);
+            header("Location: http://localhost/AGHP4/projekt/pub");
+        }
+    }, 'post');
 Route::run('/AGHP4/projekt/pub');
 
 ?>
