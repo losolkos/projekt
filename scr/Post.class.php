@@ -11,23 +11,25 @@ class Post {
     {
         $this->id = $i;
         $this->filename = $f;
-        $this->timestamp =$t;
-        $this->tytul =$l;
-        $this->autor =$a;
+        $this->timestamp = $t;
+        $this->tytul = $l;
+        $this->autor = $a;
         $this->autorName = User::getNameById($this->autor);
         global $db;
     }
 
-    public function getFilename() : string{
+    public function getFilename() : string {
         return $this->filename;
     }
 
-    public function getTimestamp() : string{
+    public function getTimestamp() : string {
         return $this->timestamp;
     }
-    public function getTytul() : string{
+
+    public function getTytul() : string {
         return $this->tytul;
     }
+
     public function getAutorName() : string {
         return $this->autorName;
     }
@@ -42,7 +44,7 @@ class Post {
         $result = $query->get_result();
         $postsArray = array();
         while($row = $result->fetch_assoc()) {
-            $post = new Post($row['id'],$row['filename'],$row['timestamp'],$row['tytul'], $row['userid']);
+            $post = new Post($row['id'], $row['filename'], $row['timestamp'], $row['tytul'], $row['userid']);
             array_push($postsArray, $post);
         }
         return $postsArray;
@@ -54,14 +56,12 @@ class Post {
         $query = $db->prepare("SELECT * FROM coś ORDER BY timestamp DESC LIMIT 1");
         $query->execute();
         $result = $query->get_result();
-        $row =$result->fetch_assoc();
-        $p = new Post($row['id'], $row['filename'], $row['timestamp'],$row['tytul'],$row['userid']);
+        $row = $result->fetch_assoc();
+        $p = new Post($row['id'], $row['filename'], $row['timestamp'], $row['tytul'], $row['userid']);
         return $p;
-
-
     }
 
-    static function upload(string $tempFileName, string $l, int $a) {
+    static function upload(string $tempFileName, string $tytul, int $autor) {
         $targetDir = "img/";
 
         $imgInfo = getimagesize($tempFileName);
@@ -71,9 +71,9 @@ class Post {
         $randomNumber = rand(10000, 99999) . hrtime(true);
         $hash = hash("sha256", $randomNumber);
         $newFileName = $targetDir . $hash. ".webp";
-        $newTytul = "1";
+        $newTytul = $tytul;
         if(file_exists($newFileName)) {
-        die("BŁĄD: Podany plik już istnieje!");
+            die("BŁĄD: Podany plik już istnieje!");
         }
 
         $imageString = file_get_contents($tempFileName);
@@ -83,21 +83,23 @@ class Post {
 
         global $db;
         
-        
-        $query = $db->prepare("INSERT INTO coś VALUES(NULL, ?, ?, ?,?)");
+        $query = $db->prepare("INSERT INTO coś VALUES(NULL, ?, ?, ?, ?)");
 
         $dbTimestamp = date("Y-m-d H:i:s");
-        $query->bind_param("sssi", $dbTimestamp, $newFileName,$newTytul, $autor);
+        $query->bind_param("sssi", $dbTimestamp, $newFileName, $newTytul,$autor);
 
         if(!$query->execute())
 
-            die("Błąd zapisu do bazy danych");
-
+        die("Błąd zapisu do bazy danych");
     }
-        
 
-
-    
+public static function remove($id) : bool {
+    global $db;
+    $query = $db->prepare("UPDATE post SET removed = 1 WHERE id = ?");
+    $query->bind_param("i", $id);
+    return $query->execute();
 }
+}
+
 
 ?>

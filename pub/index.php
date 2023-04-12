@@ -13,11 +13,18 @@ Route::add('/', function() {
     $twig->display("index.html.twig",$twigData);
 });
 Route::add('/upload', function() {
+    //strona z formularzem do wgrywania obrazków
     global $twig;
-    $postArray = Post::getPage();
-    $twigData = array("postArray" => $postArray, 
-    "pageTitle" => "strona główna"); 
-    $twig->display("upload.html.twig");
+    $twigData = array("pageTitle" => "Wgraj mema");
+    //jeśli użytkownik jest zalogowany to przekaż go do twiga
+    if(User::isAuth())
+    {
+        $twigData['user'] = $_SESSION['user'];
+        $twig->display("upload.html.twig", $twigData);
+    } else {
+        http_response_code(403);
+    }
+        
 });
 
 Route::add('/upload', function(){

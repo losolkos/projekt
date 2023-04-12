@@ -4,10 +4,16 @@
     <div id="loggedUser">Zalogowany użytkownik: {{ user.getName() }} </div>
     {% endif %}
 <form action="" method="post" enctype="multipart/form-data">
-    <label for="uploadedFileInput">
-        Wybierz plik do wgrania na serwer:
-    </label><br>
-    <input type="file" name="uploadedFile" id="uploadedFileInput" required><br>
-    <input type="submit" value="Wyślij plik" name="submit"><br>
-</form>
-{% include 'footer.html.twig' %} 
+<label for="titleInput">Tytuł obrazka</label>
+        <input type="text" name="title" id="titleInput"><br>
+        <label for="uploadedFileInput">
+            Wybierz plik do wgrania na serwer:
+        </label><br>
+        {% if user is defined %}
+        <input type="hidden" name="userid" value={{ user.getId() }}>
+        {% endif %}
+        <input type="file" name="uploadedFile" id="uploadedFileInput" required><br>
+        <input type="submit" value="Wyślij plik" name="submit"><br>
+    </form>
+</div>
+{% include 'footer.html.twig' %}

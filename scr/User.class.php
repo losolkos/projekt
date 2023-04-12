@@ -5,6 +5,7 @@ class User {
 
     public function _construct($emeil, $id ){
         $this->emeil = $emeil;
+        $this->id = $id;
 
     }
     public function getID() : string{
@@ -17,7 +18,7 @@ class User {
     public static function getNameById(int $id){
         global $db;
         $query = $db->prepare("SELECT emeil FROM user WHERE id = ? LIMIT 1");
-        $query->bind_param('i', $userid);
+        $query->bind_param('i', $id);
         $query->execute();
         $result = $query->get_result();
         $row = $result->fetch_assoc();
@@ -29,7 +30,7 @@ class User {
         global $db;
         $query = $db->prepare("INSERT INTO user VALUES (NULL, ?, ?)");
         $passwordHash = password_hash($password, PASSWORD_ARGON2I);
-        $query->bind_param("ss", $emeil, $password);
+        $query->bind_param("ss", $emeil, $passwordHash);
         return $query->execute();
     }
 
@@ -47,6 +48,18 @@ class User {
 
         }
 
+    }
+    public static function isAuth() : bool {
+        //funkcja zwraca true jeśli użytkownik jest zalogowany
+        if(isset($_SESSION['user'])) {
+            if($_SESSION['user'] instanceof User) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
     }
 }
 
