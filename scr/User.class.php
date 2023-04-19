@@ -3,7 +3,7 @@ class User {
     private $id;
     private $emeil;
 
-    public function _construct($emeil, $id ){
+    public function __construct($id, $emeil ){
         $this->emeil = $emeil;
         $this->id = $id;
 

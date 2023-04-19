@@ -4,7 +4,7 @@ class Post {
     private string $filename;
     private string $timestamp;
     private string $tytul;
-    private int $autorName;
+    private string $autorName;
     private int $autor;
      
     function __construct(int $i, string $f, string $t, string $l, int $a)
@@ -61,7 +61,7 @@ class Post {
         return $p;
     }
 
-    static function upload(string $tempFileName, string $tytul, int $autor) {
+    static function upload(string $tempFileName, string $tytul, string $autor) {
         $targetDir = "img/";
 
         $imgInfo = getimagesize($tempFileName);
