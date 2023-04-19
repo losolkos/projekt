@@ -9,7 +9,21 @@
         <img src="{{ post.getFilename() }}">
         <h6>Data dodania: {{ post.getTimestamp() }} </h6>
         <h6>tytul: {{post.getTytul()}}</h6>
+        <div class="vote-buttons">
+            <form method="post">
+                <input type="hidden" name="post_id" value="{{ post.getId() }}">
+                <button type="submit" name="upvote">Upvote</button>
+            </form>
+            <p>Upvotes: {{ post.getUpVotes() }}</p>
+        </div>
+        <div class="vote-buttons">
+            <form method="post">
+                <input type="hidden" name="post_id" value="{{ post.getId() }}">
+                <button type="submit" name="downvote">Downvote</button>
+            </form>
+            <p>Downvotes: {{ post.getDownVotes() }}</p>
+        </div>
     </div>
     {% endfor %}
 </div>
-{% include 'footer.html.twig' %} 
+{% include 'footer.html.twig' %}

@@ -7,8 +7,22 @@ use Steampixel\Route;
 Route::add('/', function() {
     global $twig;
     $postArray = Post::getPage();
-    $twigData = array("postArray" => $postArray, 
-    "pageTitle" => "strona główna");
+
+    // Check if the upvote button was clicked
+    if(isset($_POST['upvote'])) {
+        $postId = $_POST['post_id'];
+        $post = Post::getById($postId);
+        $post->upVote();
+    }
+
+    // Check if the downvote button was clicked
+    if(isset($_POST['downvote'])) {
+        $postId = $_POST['post_id'];
+        $post = Post::getById($postId);
+        $post->downVote();
+    }
+
+    $twigData = array("postArray" => $postArray, "pageTitle" => "strona główna");
     
     $twig->display("index.html.twig",$twigData);
 });
@@ -84,6 +98,7 @@ Route::add('/register', function(){
             die("Nie udało się usunąć podanego obrazka");
         }
     });
+
 Route::run('/AGHP4/projekt/pub');
 
 ?>

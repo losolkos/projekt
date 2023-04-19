@@ -1,4 +1,4 @@
-<?php
+<!-- <?php
 require('./../scr/config.php')
 ?>
 
@@ -27,4 +27,4 @@ Ostatni post:
 <pre>
 <?php
 var_dump(Post::getLast());
-?>
+?> -->
