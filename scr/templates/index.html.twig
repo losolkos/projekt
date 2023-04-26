@@ -1,5 +1,9 @@
 {% include 'header.html.twig' %}
+<head>
+    <link rel="stylesheet" type="text/css"href="style1.css">
+</head>
 <div id="pageContainer">
+    
     <h1>{{pageTitle}}</h1>
     {% if user is defined %}
     <div id="loggedUser">Zalogowany użytkownik: {{ user.getName() }} </div>

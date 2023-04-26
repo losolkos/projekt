@@ -12,17 +12,17 @@ require('./../scr/config.php')
 
 <?php
     //sprawdź czy został wysłany formularz
-    if(isset($_POST['submit']))  {
-        Post::upload($_FILES['uploadedFile']['tmp_name']);
-    }
+    //if(isset($_POST['submit']))  {
+       // Post::upload($_FILES['uploadedFile']['tmp_name']);
+   // }
 ?>
 
-<?php
-     if(isset($_POST['submit'])) {
-        Post::upload($_FILES['uploadedFile']['tmp_name']);
-     }
+//<?php
+    // if(isset($_POST['submit'])) {
+      //  Post::upload($_FILES['uploadedFile']['tmp_name']);
+     //}
 
-?>
+//?>
 Ostatni post:
 <pre>
 <?php

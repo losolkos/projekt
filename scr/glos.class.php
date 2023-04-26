@@ -1,44 +1,46 @@
 <?php
 class Vote {
+    private int $upVotes;
+    private int $downVotes;
+    private int $userID;
+    private int $postId;
+    private int $id;
 
-    public static function upVote(int $postId, int $userId) : bool {
-        //kod do dodawania upvotów
+    public function __construct(int $id, int $upVotes, int $downVotes, int $userID, int $postId) {
+        $this->id = $id;
+        $this->upVotes = $upVotes;
+        $this->downVotes = $downVotes;
+        $this->userID = $userID;
+        $this->postId = $postId;
         global $db;
-        $query = $db->prepare("INSERT INTO vote VALUES (NULL, ?, 1, ?)");
-        $query->bind_param('ii', $postId, $userId);
-        if($query->execute())
-            return true;
-        return false;
     }
-    public static function downVote(int $postId, int $userId) : bool {
+
+    public function upVote() : void {
+        $this->upVotes++;
         global $db;
-        $query = $db->prepare("INSERT INTO vote VALUES (NULL, ?, -1, ?)");
-        $query->bind_param('ii', $postId, $userId);
-        if($query->execute())
-            return true;
-        return false;
+        $query = $db->prepare("UPDATE glos SET up_votes = up_votes + 1 WHERE id = ?");
+        $query->bind_param("i", $this->id);
+        $query->execute();
     }
-    public static function getScore(int $postId) : int {
+    
+    public function downVote() : void {
+        $this->downVotes++;
         global $db;
-        //zwróć sumę głosów dla danego posta
-        $query = $db->prepare("SELECT SUM(value) FROM vote WHERE post_id = ?");
-        $query->bind_param('i', $postId);
-        if($query->execute()){
-            $result = $query->get_result();
-            $score = $result->fetch_row()[0];
-            return $score;
+        $query = $db->prepare("UPDATE glos SET down_votes = down_votes + 1 WHERE id = ?");
+        $query->bind_param("i", $this->id);
+        $query->execute();
+    }
+    public static function getById(int $id) : ?Post {
+        global $db;
+        $query = $db->prepare("SELECT * FROM glos WHERE id = ?");
+        $query->bind_param("i", $id);
+        $query->execute();
+        $result = $query->get_result();
+        if($result->num_rows === 0) {
+            return null;
         }
-        return 0;
-    }
-    public static function getVote(int $postId, int $userId) : int {
-        global $db;
-        $query = $db->prepare("SELECT value FROM vote WHERE post_id = ? AND user_id = ?");
-        $query->bind_param('ii', $postId, $userId);
-        if($query->execute()) {
-            $vote = $query->get_result()->fetch_row()[0];
-            return $vote;
-        }
-        return 0;
+        $row = $result->fetch_assoc();
+        return new Post($row["id"], $row["up_votes"], $row["down_votes"], $row["user_id"], $row["post_id"]);
     }
     
 }

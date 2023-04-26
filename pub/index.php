@@ -8,14 +8,12 @@ Route::add('/', function() {
     global $twig;
     $postArray = Post::getPage();
 
-    // Check if the upvote button was clicked
     if(isset($_POST['upvote'])) {
         $postId = $_POST['post_id'];
         $post = Post::getById($postId);
         $post->upVote();
     }
 
-    // Check if the downvote button was clicked
     if(isset($_POST['downvote'])) {
         $postId = $_POST['post_id'];
         $post = Post::getById($postId);
